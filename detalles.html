@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Detalle Objeto</title>
+<link rel="stylesheet" href="detalle.css">
+</head>
+
+<body>
+
+<div style="display:flex; justify-content:flex-end; padding:20px 40px;">
+    <button onclick="sessionStorage.removeItem('currentUser'); alert('Sesión cerrada exitosamente.'); window.location.href='iniciarsesion.html'" style="padding:10px 14px; border:none; border-radius:5px; background-color:#2563eb; color:white; cursor:pointer;">
+        Cerrar Sesión
+    </button>
+</div>
+
+<div class="detalle">
+
+    <img src="https://via.placeholder.com/300" id="detalle-imagen" alt="Objeto">
+
+    <h2 id="detalle-nombre">Nombre del objeto</h2>
+
+    <p><strong>Categoría:</strong> <span id="detalle-categoria"></span></p>
+
+    <p><strong>Ubicación:</strong> <span id="detalle-ubicacion"></span></p>
+
+    <p><strong>Fecha:</strong> <span id="detalle-fecha"></span></p>
+
+    <p><strong>Estado:</strong> <span id="detalle-estado"></span></p>
+
+    <p><strong>Descripción:</strong></p>
+    <p id="detalle-descripcion"></p>
+
+    <div class="detalle-botones">
+        <button class="btn-reportar" id="btn-reportar">Reportar</button>
+        <button class="btn-editar" id="btn-editar" style="display:none">Editar</button>
+        <button class="btn-eliminar" id="btn-eliminar" style="display:none">Eliminar</button>
+        <button class="btn-volver" onclick="window.location.href='index.html'">Volver</button>
+    </div>
+
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const detalleData = JSON.parse(sessionStorage.getItem('detalleObjeto'));
+        const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
+        const detalle = detalleData ? detalleData.obj : null;
+        const detalleIndex = detalleData ? detalleData.index : null;
+
+        if (!detalle) {
+            document.body.innerHTML = `
+                <div class="detalle">
+                    <h2>Detalle no encontrado</h2>
+                    <p>No se ha seleccionado ningún objeto.</p>
+                    <button onclick="window.location.href='index.html'">Volver al inicio</button>
+                </div>
+            `;
+            return;
+        }
+
+        document.getElementById('detalle-imagen').src = detalle.imagen || 'https://via.placeholder.com/300';
+        document.getElementById('detalle-imagen').alt = detalle.nombre;
+        document.getElementById('detalle-nombre').textContent = detalle.nombre;
+        document.getElementById('detalle-categoria').textContent = detalle.categoria || 'No especificada';
+        document.getElementById('detalle-ubicacion').textContent = detalle.ubicacion || 'No especificada';
+        document.getElementById('detalle-fecha').textContent = detalle.fecha || 'No indicada';
+        document.getElementById('detalle-estado').textContent = detalle.estado || 'En proceso';
+        document.getElementById('detalle-descripcion').textContent = detalle.descripcion || 'Sin descripción disponible.';
+
+        const btnEditar = document.getElementById('btn-editar');
+        const btnEliminar = document.getElementById('btn-eliminar');
+        const btnReportar = document.getElementById('btn-reportar');
+
+        if (currentUser && currentUser.role === 'admin') {
+            btnEditar.style.display = 'inline-block';
+            btnEliminar.style.display = 'inline-block';
+        }
+
+        btnReportar.addEventListener('click', function() {
+            window.location.href = `reportarP.html?index=${detalleIndex}`;
+        });
+
+        btnEditar.addEventListener('click', function() {
+            window.location.href = `editarR.html?index=${detalleIndex}`;
+        });
+
+        btnEliminar.addEventListener('click', function() {
+            window.location.href = `eliminarR.html?index=${detalleIndex}`;
+        });
+    });
+</script>
+
+</body>
+</html>

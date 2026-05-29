@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iniciar Sesión</title>
+    <link rel="stylesheet" href="login.css">
+</head>
+<body>
+
+    <div class="contenedor">
+
+        <div class="login-box">
+
+            <h1>Objetos Perdidos U</h1>
+            <h2>Iniciar Sesión</h2>
+
+            <form id="loginForm" onsubmit="event.preventDefault(); loginUser();">
+
+                <label>Correo Electrónico</label>
+                <input id="email" type="email" placeholder="Ingrese su correo" required>
+
+                <label>Contraseña</label>
+                <input id="password" type="password" placeholder="Ingrese su contraseña" required>
+
+                <button type="submit">
+                    Ingresar
+                </button>
+
+            </form>
+
+            <p>
+                ¿No tienes cuenta?
+                <a href="registrarse.html">Regístrate aquí</a>
+                <a href="recuperar.html">¿Olvidaste tu contraseña?</a>
+            </p>
+            <div class="admin-button-wrap">
+                <button class="btn-admin" onclick="window.location.href='admin.html'">
+                    Entrar como Admin
+                </button>
+            </div>
+
+        </div>
+
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const users = JSON.parse(sessionStorage.getItem('users')) || [];
+            if (!users.some(u => u.email === 'admin@admin.com')) {
+                users.push({ nombre: 'Administrador', email: 'admin@admin.com', password: 'admin123', role: 'admin' });
+                sessionStorage.setItem('users', JSON.stringify(users));
+            }
+        });
+
+        function loginUser() {
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+            const users = JSON.parse(sessionStorage.getItem('users')) || [];
+            const user = users.find(u => u.email === email && u.password === password);
+            if (user) {
+                sessionStorage.setItem('currentUser', JSON.stringify(user));
+                if (user.role === 'admin') {
+                    window.location.href = 'admin.html';
+                } else {
+                    window.location.href = 'index.html';
+                }
+            } else {
+                alert('Credenciales incorrectas. Inténtalo de nuevo.');
+            }
+        }
+    </script>
+
+</body>
+</html>

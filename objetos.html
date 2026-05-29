@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Publicar Objeto</title>
+    <link rel="stylesheet" href="obj.css">
+</head>
+<body>
+
+    <header>
+
+        <h1>Objetos Perdidos U</h1>
+
+        <nav>
+            <button onclick="window.location.href='index.html'">
+                Inicio
+            </button>
+        </nav>
+
+    </header>
+
+    <section class="contenedor">
+
+        <div class="formulario">
+
+            <h2>Publicar Objeto Perdido</h2>
+
+            <form onsubmit="event.preventDefault(); 
+                const nombre = document.querySelector('input[type=text]').value;
+                const categoria = document.querySelector('select').value;
+                const descripcion = document.querySelector('textarea').value;
+                const ubicacion = document.querySelectorAll('input[type=text]')[1].value;
+                const fecha = document.querySelector('input[type=date]').value;
+                const imagenInput = document.querySelector('input[type=file]');
+                const imagen = imagenInput.files[0];
+                if (!nombre || !descripcion || !ubicacion) {
+                    alert('Por favor, completa todos los campos obligatorios.');
+                    return;
+                }
+                if (imagen) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        let objetos = JSON.parse(sessionStorage.getItem('objetos')) || [];
+                        objetos.push({ nombre, categoria, descripcion, ubicacion, fecha, imagen: e.target.result, estado: 'En proceso' });
+                        sessionStorage.setItem('objetos', JSON.stringify(objetos));
+                        alert('Reporte registrado exitosamente.');
+                        window.location.href='index.html';
+                    };
+                    reader.readAsDataURL(imagen);
+                } else {
+                    let objetos = JSON.parse(sessionStorage.getItem('objetos')) || [];
+                    objetos.push({ nombre, categoria, descripcion, ubicacion, fecha, imagen: '', estado: 'En proceso' });
+                    sessionStorage.setItem('objetos', JSON.stringify(objetos));
+                    alert('Reporte registrado exitosamente.');
+                    window.location.href='index.html';
+                }">
+
+                <label>Nombre del objeto</label>
+                <input type="text" placeholder="Ej: Audífonos negros" required>
+
+                <label>Categoría</label>
+                <select required>
+                    <option>Electrónicos</option>
+                    <option>Documentos</option>
+                    <option>Accesorios</option>
+                    <option>Ropa</option>
+                    <option>Llaves</option>
+                    <option>Botellas / termos</option>
+                    <option>Otros</option>
+                </select>
+
+                <label>Descripción</label>
+                <textarea placeholder="Describe el objeto" required></textarea>
+
+                <label>Ubicación donde fue encontrado</label>
+                <input type="text" placeholder="Ej: Biblioteca" required>
+
+                <label>Fecha</label>
+                <input type="date">
+
+                <label>Subir imagen</label>
+                <input type="file" accept="image/*">
+
+                <button type="submit" class="btn-publicar">
+                    Publicar Objeto
+                </button>
+
+            </form>
+
+        </div>
+
+    </section>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
+            if (!currentUser) {
+                alert('Debes iniciar sesión para publicar un objeto.');
+                window.location.href = 'iniciarsesion.html';
+            }
+        });
+    </script>
+
+</body>
+</html>

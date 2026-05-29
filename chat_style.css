@@ -1,0 +1,126 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body{
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f4f7fb;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.chat-container{
+    width: 400px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+}
+
+.chat-header{
+    background: #1e3a8a;
+    color: white;
+    padding: 15px;
+    text-align: center;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.chat-box{
+    height: 350px;
+    padding: 15px;
+    overflow-y: auto;
+    background: #f4f7fb;
+}
+
+.message{
+    background: #dbeafe;
+    padding: 10px;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    width: fit-content;
+    max-width: 80%;
+    color: #1e3a8a;
+    font-size: 14px;
+}
+
+.message.sent{
+    background: #2563eb;
+    color: white;
+    margin-left: auto;
+    margin-right: 0;
+}
+
+.chat-input{
+    display: flex;
+    border-top: 1px solid #cbd5e1;
+    background: white;
+}
+
+.chat-input input{
+    flex: 1;
+    padding: 12px;
+    border: none;
+    outline: none;
+    font-size: 14px;
+    color: #333;
+}
+
+.chat-input input::placeholder{
+    color: #999;
+}
+
+.chat-input button{
+    background: #2563eb;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background 0.3s;
+}
+
+.chat-input button:hover{
+    background: #1d4ed8;
+}
+
+.chat-input button:active{
+    background: #1e40af;
+}
+
+.error{
+    color: #dc2626;
+    font-size: 14px;
+    padding: 8px 15px;
+    display: none;
+    background: #fee2e2;
+    border-left: 4px solid #dc2626;
+    border-radius: 4px;
+}
+
+.error.show{
+    display: block;
+}
+
+/* Scrollbar personalizado */
+.chat-box::-webkit-scrollbar{
+    width: 6px;
+}
+
+.chat-box::-webkit-scrollbar-track{
+    background: #f4f7fb;
+}
+
+.chat-box::-webkit-scrollbar-thumb{
+    background: #cbd5e1;
+    border-radius: 3px;
+}
+
+.chat-box::-webkit-scrollbar-thumb:hover{
+    background: #94a3b8;
+}

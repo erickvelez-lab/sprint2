@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Reportar Publicación</title>
+
+<link rel="stylesheet" href="reportarP.css">
+
+</head>
+
+<body>
+
+<div class="card">
+
+    <h2>Reportar Publicación</h2>
+
+    <div class="post">
+
+        <h3 id="object-title">Publicación Reportada</h3>
+
+        <p id="object-description">
+            Selecciona un motivo para reportar esta publicación.
+        </p>
+
+    </div>
+
+    <select id="motivo">
+
+        <option value="">
+            Selecciona un motivo
+        </option>
+
+        <option value="spam">
+            Spam
+        </option>
+
+        <option value="contenido">
+            Contenido inapropiado
+        </option>
+
+        <option value="fraude">
+            Fraude
+        </option>
+
+    </select>
+
+    <button onclick="reportarPublicacion()">
+        Enviar Reporte
+    </button>
+
+    <div class="message" id="mensaje">
+
+        El reporte fue enviado correctamente.
+
+    </div>
+
+</div>
+
+<script>
+    const params = new URLSearchParams(window.location.search);
+    const objectIndex = params.get('index');
+    const objectTitle = document.getElementById('object-title');
+    const objectDescription = document.getElementById('object-description');
+
+    const objetos = JSON.parse(sessionStorage.getItem('objetos')) || [];
+    const objeto = objectIndex !== null ? objetos[Number(objectIndex)] : null;
+
+    if (!objeto) {
+        alert('No se encontró la publicación para reportar.');
+        window.location.href = 'index.html';
+        return;
+    } else {
+        objectTitle.textContent = objeto.nombre;
+        objectDescription.textContent = objeto.descripcion || 'Revisa la publicación y describe el motivo.';
+    }
+
+    function reportarPublicacion(){
+        let motivo = document.getElementById('motivo').value;
+        if(motivo === ""){
+            alert("Debes seleccionar un motivo.");
+            return;
+        }
+
+        const reportes = JSON.parse(sessionStorage.getItem('reportes')) || [];
+        reportes.push({
+            index: objectIndex !== null ? Number(objectIndex) : null,
+            motivo,
+            fecha: new Date().toISOString(),
+            objeto: objeto ? objeto.nombre : null
+        });
+        sessionStorage.setItem('reportes', JSON.stringify(reportes));
+
+        document.getElementById('mensaje').style.display = 'block';
+
+        setTimeout(function(){
+            alert('La publicación será revisada y podrá ser eliminada.');
+            window.location.href = 'index.html';
+        }, 1000);
+    }
+</script>
+
+</body>
+</html>

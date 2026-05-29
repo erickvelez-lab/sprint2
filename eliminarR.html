@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Eliminar Reporte</title>
+
+<link rel="stylesheet" href="eliminarR.css">
+
+</head>
+
+<body>
+
+<div class="card">
+
+    <h2>Eliminar Publicación</h2>
+
+    <p id="object-description">
+        ¿Estás seguro de que deseas eliminar esta publicación?
+    </p>
+
+    <div class="buttons">
+
+        <button 
+            class="delete-btn"
+            onclick="eliminarReporte()"
+        >
+            Eliminar
+        </button>
+
+        <button 
+            class="cancel-btn"
+            onclick="cancelar()"
+        >
+            Cancelar
+        </button>
+
+    </div>
+
+    <div class="message" id="mensaje">
+        El reporte fue eliminado correctamente.
+    </div>
+
+</div>
+
+<script>
+    const params = new URLSearchParams(window.location.search);
+    const objectIndex = params.get('index');
+    const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
+    const objetos = JSON.parse(sessionStorage.getItem('objetos')) || [];
+    const objeto = objectIndex !== null ? objetos[Number(objectIndex)] : null;
+
+    if (!currentUser || currentUser.role !== 'admin') {
+        alert('Acceso denegado. Debes iniciar sesión como administrador.');
+        window.location.href = 'iniciarsesion.html';
+        return;
+    }
+
+    if (!objeto) {
+        alert('No se encontró la publicación para eliminar.');
+        window.location.href = 'index.html';
+        return;
+    }
+
+    if (objeto) {
+        document.getElementById('object-description').textContent = `¿Estás seguro de que deseas eliminar "${objeto.nombre}"?`;
+    }
+
+    function eliminarReporte(){
+        let confirmar = confirm('¿Seguro que deseas eliminar la publicación?');
+        if (!confirmar) return;
+
+        if (objectIndex === null || !objetos[Number(objectIndex)]) {
+            alert('No se encontró la publicación para eliminar.');
+            return;
+        }
+
+        objetos.splice(Number(objectIndex), 1);
+        sessionStorage.setItem('objetos', JSON.stringify(objetos));
+        document.getElementById('mensaje').style.display = 'block';
+        setTimeout(() => {
+            window.location.href = 'index.html';
+        }, 1000);
+    }
+
+    function cancelar(){
+        window.location.href = objectIndex !== null ? `detalles.html` : 'index.html';
+    }
+</script>
+
+</body>
+</html>

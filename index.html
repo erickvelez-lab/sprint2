@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Objetos Perdidos U</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    
+    <header>
+        <h1>Objetos Perdidos U</h1>
+
+        <nav>
+            <button onclick="window.location.href='iniciarsesion.html'">Iniciar Sesión</button>
+        </nav>
+    </header>
+
+    
+    <section class="hero">
+        <h2>Encuentra tus objetos perdidos fácilmente</h2>
+        <p>
+            Plataforma universitaria para reportar y recuperar objetos perdidos.
+        </p>
+
+        <button class="publicar-btn" onclick="window.location.href='objetos.html'">
+            Publicar Objeto
+        </button>
+    </section>
+
+    <section class="objetos">
+
+        <h2>Objetos recientes</h2>
+
+        <div class="filtro-contenedor">
+            <label for="filtro-categoria">Filtrar por categoría:</label>
+            <select class="filtro" id="filtro-categoria">
+                <option value="Todas">Todas</option>
+            </select>
+        </div>
+
+        <div class="contenedor-objetos" id="contenedor-objetos">
+        </div>
+
+    </section>
+    
+    <footer>
+        <p>© 2026 Objetos Perdidos U</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
+            const nav = document.querySelector('header nav');
+            const publicarBtn = document.querySelector('.publicar-btn');
+            if (currentUser) {
+                nav.innerHTML = `
+                    <button onclick="window.location.href='categoriaObjetos.html'">Categorías</button>
+                    <button onclick="sessionStorage.removeItem('currentUser'); alert('Sesión cerrada exitosamente.'); window.location.href='iniciarsesion.html'">Cerrar Sesión</button>
+                `;
+                publicarBtn.style.display = 'block';
+            } else {
+                nav.innerHTML = `
+                    <button onclick="window.location.href='categoriaObjetos.html'">Categorías</button>
+                    <button onclick="window.location.href='iniciarsesion.html'">Iniciar Sesión</button>
+                `;
+                publicarBtn.style.display = 'none';
+            }
+
+            const objetos = JSON.parse(sessionStorage.getItem('objetos')) || [];
+            const contenedor = document.getElementById('contenedor-objetos');
+            const filtroSelect = document.getElementById('filtro-categoria');
+            const isAdmin = currentUser && currentUser.role === 'admin';
+            const visibleObjects = isAdmin
+                ? objetos
+                : objetos.filter(obj => obj.estado === 'Aprobado');
+
+            function actualizarCategorias() {
+                const categorias = visibleObjects
+                    .map(obj => obj.categoria)
+                    .filter(Boolean);
+                const categoriasUnicas = [...new Set(categorias)];
+
+                filtroSelect.innerHTML = '<option value="Todas">Todas</option>';
+                categoriasUnicas.forEach(categoria => {
+                    const option = document.createElement('option');
+                    option.value = categoria;
+                    option.textContent = categoria;
+                    filtroSelect.appendChild(option);
+                });
+            }
+
+            function renderObjetos(categoria) {
+                contenedor.innerHTML = '';
+                const filtrados = categoria && categoria !== 'Todas'
+                    ? visibleObjects
+                        .map((obj, index) => ({ obj, index }))
+                        .filter(item => item.obj.categoria === categoria)
+                    : visibleObjects.map((obj, index) => ({ obj, index }));
+
+                if (filtrados.length === 0) {
+                    contenedor.innerHTML = '<p>No hay publicaciones para esta categoría.</p>';
+                    return;
+                }
+
+                filtrados.forEach(item => {
+                    const card = document.createElement('div');
+                    card.className = 'card';
+                    card.innerHTML = `
+                        <img src="${item.obj.imagen || 'https://via.placeholder.com/200'}" alt="${item.obj.nombre}">
+                        <h3>${item.obj.nombre}</h3>
+                        <p>Encontrado en ${item.obj.ubicacion}</p>
+                        ${isAdmin ? `<p>Estado: ${item.obj.estado || 'En proceso'}</p>` : ''}
+                        <button class="btn-detalles" onclick="verDetalles(${item.index})">Detalles</button>
+                    `;
+                    contenedor.appendChild(card);
+                });
+            }
+
+            actualizarCategorias();
+            filtroSelect.addEventListener('change', function() {
+                renderObjetos(this.value);
+            });
+
+            renderObjetos(filtroSelect.value);
+
+            window.verDetalles = function(index) {
+                const objetos = JSON.parse(sessionStorage.getItem('objetos')) || [];
+                if (!objetos[index]) return;
+                sessionStorage.setItem('detalleObjeto', JSON.stringify({ obj: objetos[index], index }));
+                window.location.href = 'detalles.html';
+            };
+        });
+    </script>
+
+</body>
+</html>

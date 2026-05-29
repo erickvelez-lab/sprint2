@@ -1,0 +1,95 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body{
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f4f7fb;
+    padding: 30px 20px;
+}
+
+h1{
+    text-align: center;
+    color: #1e3a8a;
+    margin-bottom: 30px;
+    font-size: 28px;
+}
+
+.filter-container{
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.filter-container label{
+    color: #1e3a8a;
+    font-weight: bold;
+    margin-right: 10px;
+}
+
+select{
+    padding: 10px 12px;
+    width: 250px;
+    border-radius: 6px;
+    border: 1px solid #cbd5e1;
+    font-size: 14px;
+    color: #333;
+    background: white;
+    cursor: pointer;
+}
+
+select:focus{
+    outline: none;
+    border-color: #2563eb;
+}
+
+.container{
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.card{
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    border: 1px solid #cbd5e1;
+    transition: box-shadow 0.3s;
+}
+
+.card:hover{
+    box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.card h3{
+    color: #1e3a8a;
+    margin-bottom: 10px;
+    font-size: 16px;
+}
+
+.card p{
+    color: #333;
+    font-size: 14px;
+    margin-bottom: 12px;
+}
+
+.card button{
+    background: #2563eb;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background 0.3s;
+}
+
+.card button:hover{
+    background: #1d4ed8;
+}

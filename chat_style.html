@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Chat - Objetos Perdidos</title>
+
+<link rel="stylesheet" href="styles.css">
+
+</head>
+
+<body>
+
+<div class="chat-container">
+
+    <div class="chat-header">
+        Conversación del objeto
+    </div>
+
+    <div class="chat-box" id="chatBox">
+
+        <div class="message">
+            Hola, encontré tu objeto perdido.
+        </div>
+
+    </div>
+
+    <div class="error" id="errorMessage">
+        No puedes enviar mensajes vacíos.
+    </div>
+
+    <div class="chat-input">
+
+        <input 
+            type="text" 
+            id="messageInput" 
+            placeholder="Escribe un mensaje..."
+        >
+
+        <button onclick="sendMessage()">
+            Enviar
+        </button>
+
+    </div>
+
+</div>
+
+<script>
+
+function sendMessage(){
+
+    let input = document.getElementById("messageInput");
+    let chatBox = document.getElementById("chatBox");
+    let error = document.getElementById("errorMessage");
+
+    let message = input.value.trim();
+
+    if(message === ""){
+
+        error.style.display = "block";
+        return;
+    }
+
+    error.style.display = "none";
+
+    let newMessage = document.createElement("div");
+
+    newMessage.classList.add("message");
+
+    newMessage.textContent = message;
+
+    chatBox.appendChild(newMessage);
+
+    input.value = "";
+
+    chatBox.scrollTop = chatBox.scrollHeight;
+}
+
+</script>
+
+</body>
+</html>

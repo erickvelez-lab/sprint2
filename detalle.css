@@ -1,0 +1,57 @@
+body{
+    font-family: Arial;
+    background: #f4f7fb;
+}
+
+.detalle{
+    background: white;
+    width: 400px;
+    margin: auto;
+    margin-top: 50px;
+    padding: 30px;
+    border-radius: 10px;
+    text-align: center;
+}
+
+.detalle img{
+    width: 100%;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+.detalle-botones{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.detalle-botones button{
+    padding: 10px 18px;
+    border: none;
+    border-radius: 6px;
+    color: white;
+    cursor: pointer;
+    min-width: 110px;
+}
+
+.btn-volver{
+    background-color: #2563eb;
+}
+
+.btn-editar{
+    background-color: #1e3a8a;
+}
+
+.btn-eliminar{
+    background-color: #dc2626;
+}
+
+.btn-reportar{
+    background-color: #2563eb;
+}
+
+.detalle-botones button:hover{
+    opacity: 0.92;
+}

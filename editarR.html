@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Editar Reporte</title>
+
+<link rel="stylesheet" href="editarR.css">
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <h2>Editar Reporte</h2>
+
+    <label for="descripcion">
+        Descripción del objeto
+    </label>
+
+    <textarea 
+        id="descripcion" 
+        placeholder="Actualiza la descripción del objeto..."
+    ></textarea>
+
+    <label for="imagen">
+        Actualizar imagen
+    </label>
+
+    <input type="file" id="imagen">
+
+    <button onclick="actualizarReporte()">
+        Guardar Cambios
+    </button>
+
+    <div class="message" id="mensaje">
+        Reporte actualizado correctamente.
+    </div>
+
+</div>
+
+<script>
+    const params = new URLSearchParams(window.location.search);
+    const objectIndex = params.get('index');
+    const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
+    const objetos = JSON.parse(sessionStorage.getItem('objetos')) || [];
+    const objeto = objectIndex !== null ? objetos[Number(objectIndex)] : null;
+
+    if (!currentUser || currentUser.role !== 'admin') {
+        alert('Acceso denegado. Debes iniciar sesión como administrador.');
+        window.location.href = 'iniciarsesion.html';
+        return;
+    }
+
+    if (!objeto) {
+        alert('No se encontró la publicación para editar.');
+        window.location.href = 'index.html';
+        return;
+    }
+
+    if (objeto) {
+        document.getElementById('descripcion').value = objeto.descripcion || '';
+    }
+
+    function actualizarReporte(){
+        let descripcion = document.getElementById('descripcion').value;
+        let imagen = document.getElementById('imagen').files[0];
+
+        if (descripcion.trim() === '' && !imagen) {
+            alert('Debes actualizar la descripción o la imagen.');
+            return;
+        }
+
+        if (!objeto || objectIndex === null || !objetos[Number(objectIndex)]) {
+            alert('No se encontró la publicación para actualizar.');
+            return;
+        }
+
+        if (descripcion.trim() !== '') {
+            objetos[Number(objectIndex)].descripcion = descripcion.trim();
+        }
+
+        if (imagen) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                objetos[Number(objectIndex)].imagen = e.target.result;
+                sessionStorage.setItem('objetos', JSON.stringify(objetos));
+                sessionStorage.setItem('detalleObjeto', JSON.stringify({ obj: objetos[Number(objectIndex)], index: Number(objectIndex) }));
+                document.getElementById('mensaje').style.display = 'block';
+                setTimeout(() => {
+                    window.location.href = `detalles.html`;
+                }, 1000);
+            };
+            reader.readAsDataURL(imagen);
+            return;
+        }
+
+        sessionStorage.setItem('objetos', JSON.stringify(objetos));
+        sessionStorage.setItem('detalleObjeto', JSON.stringify({ obj: objetos[Number(objectIndex)], index: Number(objectIndex) }));
+        document.getElementById('mensaje').style.display = 'block';
+        setTimeout(() => {
+            window.location.href = `detalles.html`;
+        }, 1000);
+    }
+</script>
+
+</body>
+</html>

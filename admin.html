@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Panel Admin</title>
+<link rel="stylesheet" href="admin.css">
+</head>
+
+<body>
+
+<div style="display:flex; justify-content:flex-end; gap:10px; padding:20px 40px;">
+    <button onclick="window.location.href='index.html'" style="padding:10px 14px; border:none; border-radius:5px; background-color:#10b981; color:white; cursor:pointer;">
+        Ir al Inicio
+    </button>
+    <button onclick="sessionStorage.removeItem('currentUser'); alert('Sesión cerrada exitosamente.'); window.location.href='iniciarsesion.html'" style="padding:10px 14px; border:none; border-radius:5px; background-color:#2563eb; color:white; cursor:pointer;">
+        Cerrar Sesión
+    </button>
+</div>
+
+<h1 style="padding:0 40px;">Panel Administrador</h1>
+
+<section class="admin-panel">
+    <h2>Publicaciones pendientes</h2>
+    <div id="admin-listado"></div>
+</section>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
+        if (!currentUser || currentUser.role !== 'admin') {
+            alert('Debes iniciar sesión como administrador.');
+            window.location.href = 'iniciarsesion.html';
+            return;
+        }
+
+        const listado = document.getElementById('admin-listado');
+        const objetos = JSON.parse(sessionStorage.getItem('objetos')) || [];
+
+        function guardarCambios() {
+            sessionStorage.setItem('objetos', JSON.stringify(objetos));
+        }
+
+        function renderListado() {
+            listado.innerHTML = '';
+            const pendientes = objetos
+                .map((obj, index) => ({ obj, index }))
+                .filter(item => item.obj.estado === 'En proceso' || item.obj.estado === 'Pendiente');
+
+            if (pendientes.length === 0) {
+                listado.innerHTML = '<p>No hay publicaciones pendientes.</p>';
+                return;
+            }
+
+            pendientes.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'admin-objeto';
+                card.innerHTML = `
+                    <div class="admin-objeto-info">
+                        <h3>${item.obj.nombre}</h3>
+                        <p><strong>Categoría:</strong> ${item.obj.categoria || 'No especificada'}</p>
+                        <p><strong>Ubicación:</strong> ${item.obj.ubicacion || 'No especificada'}</p>
+                        <p><strong>Descripción:</strong> ${item.obj.descripcion || 'Sin descripción'}</p>
+                        <p><strong>Estado:</strong> ${item.obj.estado || 'En proceso'}</p>
+                    </div>
+                    <div class="admin-objeto-acciones">
+                        <button class="btn-aprobar">Aprobar</button>
+                        <button class="btn-rechazar">Rechazar</button>
+                        <button class="btn-eliminar">Eliminar</button>
+                    </div>
+                `;
+
+                card.querySelector('.btn-aprobar').addEventListener('click', function() {
+                    objetos[item.index].estado = 'Aprobado';
+                    guardarCambios();
+                    renderListado();
+                });
+
+                card.querySelector('.btn-rechazar').addEventListener('click', function() {
+                    objetos[item.index].estado = 'Rechazado';
+                    guardarCambios();
+                    renderListado();
+                });
+
+                card.querySelector('.btn-eliminar').addEventListener('click', function() {
+                    if (!confirm('¿Quieres eliminar esta publicación?')) return;
+                    objetos.splice(item.index, 1);
+                    guardarCambios();
+                    renderListado();
+                });
+
+                listado.appendChild(card);
+            });
+        }
+
+        renderListado();
+    });
+</script>
+
+</body>
+</html>
